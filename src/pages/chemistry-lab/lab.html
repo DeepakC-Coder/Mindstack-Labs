@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDTA Titration - Ultra-Realistic Virtual Laboratory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="lab.css">
+    <!-- Three.js CDN for 3D rendering (r128 - stable global exports) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loader">
+            <div class="beaker-loader">
+                <div class="liquid-wave"></div>
+            </div>
+            <h2>Preparing Virtual Laboratory...</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="lab-header">
+            <div class="logo">
+                <span class="logo-icon">⚗️</span>
+                <div class="logo-text">
+                    <h1>Virtual Chemistry Lab</h1>
+                    <span class="subtitle">EDTA Titration Experiment</span>
+                </div>
+            </div>
+            <div class="header-controls">
+                <button class="header-btn" id="tutorialBtn" title="Tutorial">📖</button>
+                <button class="header-btn" id="soundBtn" title="Toggle Sound">🔊</button>
+                <button class="header-btn" id="helpBtn" title="Help">❓</button>
+                <button class="header-btn" id="resetBtn" title="Reset Experiment">🔄</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="lab-main">
+            <!-- Left Panel - Equipment Library & Chat -->
+            <aside class="left-panel">
+                <!-- Toggle Button for Equipment Library -->
+                <div class="panel-toggle-container">
+                    <button class="panel-toggle-btn active" id="equipmentToggleBtn" title="Lab Equipment">
+                        🧪 Equipment Library
+                    </button>
+                    <button class="panel-toggle-btn" id="experimentToggleBtn" title="Experiment Controls">
+                        📋 Experiment
+                    </button>
+                </div>
+
+                <!-- Equipment Library Panel (New) -->
+                <div class="equipment-library-panel" id="equipmentLibraryPanel">
+                    <div class="panel-section equipment-section">
+                        <h3>🧪 Lab Equipment</h3>
+                        <div class="equipment-grid">
+                            <!-- Glassware -->
+                            <div class="equipment-category">
+                                <h4>📐 Glassware</h4>
+                                <div class="equipment-items">
+                                    <div class="equipment-item" data-item="burette">
+                                        <div class="eq-icon">🧪</div>
+                                        <span>Burette (50mL)</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="conical-flask">
+                                        <div class="eq-icon">🧪</div>
+                                        <span>Conical Flask</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="beaker">
+                                        <div class="eq-icon">🥛</div>
+                                        <span>Beaker (250mL)</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="test-tube">
+                                        <div class="eq-icon">🧫</div>
+                                        <span>Test Tubes</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="measuring-cylinder">
+                                        <div class="eq-icon">📏</div>
+                                        <span>Measuring Cylinder</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="pipette">
+                                        <div class="eq-icon">💉</div>
+                                        <span>Pipette (25mL)</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="volumetric-flask">
+                                        <div class="eq-icon">⚗️</div>
+                                        <span>Volumetric Flask</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="funnel">
+                                        <div class="eq-icon">🔻</div>
+                                        <span>Glass Funnel</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chemicals -->
+                            <div class="equipment-category">
+                                <h4>🧬 Chemicals & Reagents</h4>
+                                <div class="equipment-items chemicals-grid">
+                                    <div class="chemical-item" data-chemical="edta" style="--chem-color: #60a5fa">
+                                        <div class="chem-color"></div>
+                                        <span>EDTA Solution</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="hcl" style="--chem-color: #f87171">
+                                        <div class="chem-color"></div>
+                                        <span>HCl (Conc.)</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="naoh" style="--chem-color: #a78bfa">
+                                        <div class="chem-color"></div>
+                                        <span>NaOH Solution</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="h2so4" style="--chem-color: #fbbf24">
+                                        <div class="chem-color"></div>
+                                        <span>H₂SO₄ (Dilute)</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="buffer" style="--chem-color: #34d399">
+                                        <div class="chem-color"></div>
+                                        <span>Buffer pH 10</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="ebt" style="--chem-color: #ef4444">
+                                        <div class="chem-color"></div>
+                                        <span>EBT Indicator</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="phenolphthalein" style="--chem-color: #ec4899">
+                                        <div class="chem-color"></div>
+                                        <span>Phenolphthalein</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="methyl-orange" style="--chem-color: #fb923c">
+                                        <div class="chem-color"></div>
+                                        <span>Methyl Orange</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="kmno4" style="--chem-color: #7c3aed">
+                                        <div class="chem-color"></div>
+                                        <span>KMnO₄</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="cuso4" style="--chem-color: #06b6d4">
+                                        <div class="chem-color"></div>
+                                        <span>CuSO₄ Solution</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="agno3" style="--chem-color: #9ca3af">
+                                        <div class="chem-color"></div>
+                                        <span>AgNO₃</span>
+                                    </div>
+                                    <div class="chemical-item" data-chemical="distilled-water" style="--chem-color: #bfdbfe">
+                                        <div class="chem-color"></div>
+                                        <span>Distilled Water</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Accessories -->
+                            <div class="equipment-category">
+                                <h4>🔧 Accessories</h4>
+                                <div class="equipment-items">
+                                    <div class="equipment-item" data-item="burette-stand">
+                                        <div class="eq-icon">🗼</div>
+                                        <span>Burette Stand</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="clamp">
+                                        <div class="eq-icon">🔗</div>
+                                        <span>Burette Clamp</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="bunsen-burner">
+                                        <div class="eq-icon">🔥</div>
+                                        <span>Bunsen Burner</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="tripod">
+                                        <div class="eq-icon">🦯</div>
+                                        <span>Tripod Stand</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="wire-gauze">
+                                        <div class="eq-icon">🔲</div>
+                                        <span>Wire Gauze</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="dropper">
+                                        <div class="eq-icon">💧</div>
+                                        <span>Dropper</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="wash-bottle">
+                                        <div class="eq-icon">🫗</div>
+                                        <span>Wash Bottle</span>
+                                    </div>
+                                    <div class="equipment-item" data-item="test-tube-rack">
+                                        <div class="eq-icon">🧫</div>
+                                        <span>Test Tube Rack</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Area -->
+                    <div class="panel-section chat-section">
+                        <h3>💬 Lab Assistant</h3>
+                        <div class="chat-container" id="chatContainer">
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="chat-message assistant">
+                                    <div class="message-avatar">🧑‍🔬</div>
+                                    <div class="message-content">
+                                        <p>Welcome to the Virtual Chemistry Lab! I'm your lab assistant. How can I help you with your EDTA titration experiment today?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-input-container">
+                                <input type="text" id="chatInput" placeholder="Ask a question..." />
+                                <button id="chatSendBtn">📤</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experiment Panel (Original left panel content) -->
+                <div class="experiment-panel" id="experimentPanel" style="display: none;">
+                    <div class="panel-section student-info">
+                        <h3>👤 Student Information</h3>
+                        <div class="info-form" id="studentForm">
+                            <div class="form-field">
+                                <label>Name:</label>
+                                <input type="text" id="studentName" placeholder="Enter your name">
+                            </div>
+                            <div class="form-field">
+                                <label>Roll No:</label>
+                                <input type="text" id="rollNo" placeholder="Enter roll number">
+                            </div>
+                            <button class="start-btn" id="startBtn">🚀 Start Experiment</button>
+                        </div>
+                        <div class="student-display" id="studentDisplay" style="display:none;">
+                            <p><strong>Name:</strong> <span id="displayName"></span></p>
+                            <p><strong>Roll:</strong> <span id="displayRoll"></span></p>
+                            <p><strong>Exp ID:</strong> <span id="expId"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="panel-section parameters" id="parametersSection">
+                        <h3>⚗️ Experiment Parameters</h3>
+                        <div class="param-form">
+                            <div class="param-field">
+                                <label>EDTA Concentration:</label>
+                                <select id="edtaConc">
+                                    <option value="0.005">0.005 M</option>
+                                    <option value="0.01" selected>0.01 M</option>
+                                    <option value="0.02">0.02 M</option>
+                                    <option value="0.05">0.05 M</option>
+                                    <option value="0.1">0.1 M</option>
+                                </select>
+                            </div>
+                            <div class="param-field">
+                                <label>Buffer pH:</label>
+                                <select id="bufferPH">
+                                    <option value="9.0">9.0</option>
+                                    <option value="9.5">9.5</option>
+                                    <option value="10.0" selected>10.0</option>
+                                    <option value="10.5">10.5</option>
+                                    <option value="11.0">11.0</option>
+                                </select>
+                            </div>
+                            <div class="param-field">
+                                <label>Sample Volume:</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="sampleVolume" value="25" min="10" max="100" step="5">
+                                    <span>mL</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="param-display" id="paramDisplay">
+                            <small>Current: EDTA <span id="dispEdta">0.01</span>M | pH <span id="dispPH">10.0</span> | <span
+                                    id="dispVol">25</span>mL</small>
+                        </div>
+                    </div>
+
+                    <div class="panel-section instructions">
+                        <h3>📋 Instructions</h3>
+                        <div class="step-indicator">
+                            <div class="step-badge" id="stepBadge">1</div>
+                            <span id="stepTotal">/ 6</span>
+                        </div>
+                        <h4 id="stepTitle">Enter Your Details</h4>
+                        <p id="stepDescription">Please fill in your name and roll number to begin the experiment.</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center - Lab Workspace -->
+            <section class="lab-workspace">
+                <div class="workspace-bg">
+                    <div class="bench-surface"></div>
+                </div>
+
+                <!-- Equipment Area -->
+                <div class="equipment-area">
+                    <!-- 3D Canvas Container -->
+                    <div id="equipmentArea3D" class="equipment-area-3d"></div>
+                    <!-- Burette with Stand -->
+                    <div class="burette-assembly" id="buretteAssembly">
+                        <div class="burette-stand">
+                            <div class="stand-base"></div>
+                            <div class="stand-rod"></div>
+                            <div class="stand-clamp"></div>
+                        </div>
+                        <div class="burette" id="burette">
+                            <div class="burette-top"></div>
+                            <div class="burette-tube">
+                                <div class="burette-liquid" id="buretteLiquid"></div>
+                            </div>
+                            <div class="burette-tap" id="buretteTap">
+                                <div class="tap-body"></div>
+                                <div class="tap-handle"></div>
+                            </div>
+                            <div class="burette-tip"></div>
+                        </div>
+                        <div class="burette-reading" id="buretteReading">0.0 mL</div>
+                    </div>
+
+                    <!-- Conical Flask -->
+                    <div class="flask-assembly" id="flaskAssembly">
+                        <div class="flask">
+                            <div class="flask-neck"></div>
+                            <div class="flask-body">
+                                <div class="flask-liquid" id="flaskLiquid"></div>
+                                <div class="flask-shine"></div>
+                            </div>
+                        </div>
+                        <div class="flask-label">Conical Flask (250mL)</div>
+                    </div>
+
+                    <!-- Drops Container -->
+                    <div class="drops-container" id="dropsContainer"></div>
+                </div>
+
+                <!-- Reagent Bottles -->
+                <div class="reagent-shelf">
+                    <div class="reagent-bottle" id="sampleBottle" data-reagent="sample">
+                        <div class="bottle-cap"></div>
+                        <div class="bottle-body">
+                            <div class="bottle-liquid clear"></div>
+                            <div class="bottle-label">Water<br>Sample</div>
+                        </div>
+                    </div>
+                    <div class="reagent-bottle" id="bufferBottle" data-reagent="buffer">
+                        <div class="bottle-cap"></div>
+                        <div class="bottle-body">
+                            <div class="bottle-liquid yellow"></div>
+                            <div class="bottle-label">Buffer<br>pH 10</div>
+                        </div>
+                    </div>
+                    <div class="reagent-bottle" id="indicatorBottle" data-reagent="indicator">
+                        <div class="bottle-cap"></div>
+                        <div class="bottle-body">
+                            <div class="bottle-liquid red"></div>
+                            <div class="bottle-label">EBT<br>Indicator</div>
+                        </div>
+                    </div>
+                    <div class="reagent-bottle" id="edtaBottle" data-reagent="edta">
+                        <div class="bottle-cap"></div>
+                        <div class="bottle-body">
+                            <div class="bottle-liquid blue"></div>
+                            <div class="bottle-label">EDTA<br>0.01M</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Titration Controls -->
+                <div class="titration-controls" id="titrationControls" style="display:none;">
+                    <div class="control-panel">
+                        <div class="control-title">💧 Titration Control</div>
+                        <div class="control-buttons">
+                            <button class="drop-btn" id="dropBtn">
+                                <span class="drop-icon">💧</span>
+                                <span>ADD DROP</span>
+                                <small>Click or Hold</small>
+                            </button>
+                            <button class="stop-btn" id="stopBtn">
+                                <span class="stop-icon">⏹️</span>
+                                <span>STOP</span>
+                                <small>End Titration</small>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel - Observations -->
+            <aside class="right-panel">
+                <!-- Toggle Button for Right Panel -->
+                <div class="right-panel-toggle">
+                    <button class="panel-toggle-btn active" id="observationsToggleBtn">
+                        📊 Observations
+                    </button>
+                    <button class="panel-toggle-btn" id="controlsToggleBtn">
+                        ⚙️ Controls
+                    </button>
+                </div>
+
+                <!-- Observations Panel -->
+                <div class="observations-wrapper" id="observationsWrapper">
+                    <div class="panel-section observations">
+                        <h3>📊 Live Observations</h3>
+
+                        <!-- Titration Counter -->
+                        <div class="titration-indicator" id="titrationIndicator">
+                            <span class="titration-badge" id="titrationBadge">Titration 1 of 2</span>
+                        </div>
+
+                        <div class="obs-group">
+                            <h4>Current Titration</h4>
+                            <div class="obs-item">
+                                <span class="obs-label">Initial:</span>
+                                <span class="obs-value" id="obsInitial">0.0 mL</span>
+                            </div>
+                            <div class="obs-item">
+                                <span class="obs-label">Current:</span>
+                                <span class="obs-value live" id="obsCurrent">0.0 mL</span>
+                            </div>
+                            <div class="obs-item highlight">
+                                <span class="obs-label">Volume Used:</span>
+                                <span class="obs-value" id="obsVolume">0.0 mL</span>
+                            </div>
+                        </div>
+
+                        <!-- Two Titration Results -->
+                        <div class="obs-group" id="titrationResults" style="display:none;">
+                            <h4>Titration Summary</h4>
+                            <div class="obs-item">
+                                <span class="obs-label">Titration 1:</span>
+                                <span class="obs-value" id="titration1Vol">-</span>
+                            </div>
+                            <div class="obs-item">
+                                <span class="obs-label">Titration 2:</span>
+                                <span class="obs-value" id="titration2Vol">-</span>
+                            </div>
+                            <div class="obs-item highlight">
+                                <span class="obs-label">Average Volume:</span>
+                                <span class="obs-value" id="averageVol">-</span>
+                            </div>
+                        </div>
+
+                        <div class="obs-group" id="resultsGroup" style="display:none;">
+                            <h4>Results</h4>
+                            <div class="obs-item">
+                                <span class="obs-label">Hardness:</span>
+                                <span class="obs-value" id="hardnessResult">-</span>
+                            </div>
+                            <div class="obs-item accuracy">
+                                <span class="obs-label">Accuracy:</span>
+                                <span class="obs-value" id="accuracyResult">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-section calculations" id="calcSection" style="display:none;">
+                        <h3>🧮 Calculations</h3>
+                        <div id="calcContent"></div>
+                    </div>
+
+                    <!-- Lab Report Input Section -->
+                    <div class="panel-section lab-report-inputs" id="labReportSection" style="display:none;">
+                        <h3>📝 Lab Report Details</h3>
+
+                        <div class="report-field">
+                            <label for="reportAim">AIM:</label>
+                            <textarea id="reportAim" rows="2" placeholder="Enter the aim of this experiment..."></textarea>
+                        </div>
+
+                        <div class="report-field">
+                            <label for="reportProcedure">Procedure (20-30 words):</label>
+                            <textarea id="reportProcedure" rows="3"
+                                placeholder="Briefly describe the procedure followed..."></textarea>
+                            <small class="word-count"><span id="procedureWordCount">0</span>/30 words</small>
+                        </div>
+
+                        <div class="report-field">
+                            <label for="reportResult">Your Result/Conclusion:</label>
+                            <textarea id="reportResult" rows="2"
+                                placeholder="Enter your observations and conclusion..."></textarea>
+                        </div>
+                    </div>
+
+                    <button class="export-btn" id="exportBtn" disabled>
+                        📄 Export PDF Report
+                    </button>
+                </div>
+
+                <!-- Controls Panel (Student Info moved here as toggle) -->
+                <div class="controls-wrapper" id="controlsWrapper" style="display: none;">
+                    <div class="panel-section student-info-right">
+                        <h3>👤 Student Information</h3>
+                        <div class="info-form" id="studentFormRight">
+                            <div class="form-field">
+                                <label>Name:</label>
+                                <input type="text" id="studentNameRight" placeholder="Enter your name">
+                            </div>
+                            <div class="form-field">
+                                <label>Roll No:</label>
+                                <input type="text" id="rollNoRight" placeholder="Enter roll number">
+                            </div>
+                            <button class="start-btn" id="startBtnRight">🚀 Start Experiment</button>
+                        </div>
+                    </div>
+
+                    <div class="panel-section parameters-right">
+                        <h3>⚗️ Experiment Parameters</h3>
+                        <div class="param-form">
+                            <div class="param-field">
+                                <label>EDTA Concentration:</label>
+                                <select id="edtaConcRight">
+                                    <option value="0.005">0.005 M</option>
+                                    <option value="0.01" selected>0.01 M</option>
+                                    <option value="0.02">0.02 M</option>
+                                    <option value="0.05">0.05 M</option>
+                                    <option value="0.1">0.1 M</option>
+                                </select>
+                            </div>
+                            <div class="param-field">
+                                <label>Buffer pH:</label>
+                                <select id="bufferPHRight">
+                                    <option value="9.0">9.0</option>
+                                    <option value="9.5">9.5</option>
+                                    <option value="10.0" selected>10.0</option>
+                                    <option value="10.5">10.5</option>
+                                    <option value="11.0">11.0</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-section instructions-right">
+                        <h3>📋 Instructions</h3>
+                        <div class="step-indicator">
+                            <div class="step-badge" id="stepBadgeRight">1</div>
+                            <span>/ 6</span>
+                        </div>
+                        <h4 id="stepTitleRight">Enter Your Details</h4>
+                        <p id="stepDescriptionRight">Fill in your name and roll number to begin.</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div class="tutorial-modal" id="tutorialModal" style="display:none;">
+        <div class="tutorial-overlay"></div>
+        <div class="tutorial-content">
+            <div class="tutorial-header">
+                <h2>📖 EDTA Titration Tutorial</h2>
+                <button class="tutorial-close" id="closeTutorial">×</button>
+            </div>
+            <div class="tutorial-body" id="tutorialBody">
+                <!-- Tutorial content loaded dynamically -->
+            </div>
+            <div class="tutorial-navigation">
+                <button class="tutorial-nav-btn" id="tutorialPrev" disabled>← Previous</button>
+                <span class="tutorial-progress" id="tutorialProgress">1 / 8</span>
+                <button class="tutorial-nav-btn primary" id="tutorialNext">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="three-lab.js"></script>
+    <script src="lab.js"></script>
+    <script>
+        // Panel Toggle Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Left Panel Toggles
+            const equipmentToggleBtn = document.getElementById('equipmentToggleBtn');
+            const experimentToggleBtn = document.getElementById('experimentToggleBtn');
+            const equipmentLibraryPanel = document.getElementById('equipmentLibraryPanel');
+            const experimentPanel = document.getElementById('experimentPanel');
+
+            equipmentToggleBtn.addEventListener('click', function() {
+                equipmentToggleBtn.classList.add('active');
+                experimentToggleBtn.classList.remove('active');
+                equipmentLibraryPanel.style.display = 'block';
+                experimentPanel.style.display = 'none';
+            });
+
+            experimentToggleBtn.addEventListener('click', function() {
+                experimentToggleBtn.classList.add('active');
+                equipmentToggleBtn.classList.remove('active');
+                experimentPanel.style.display = 'block';
+                equipmentLibraryPanel.style.display = 'none';
+            });
+
+            // Right Panel Toggles
+            const observationsToggleBtn = document.getElementById('observationsToggleBtn');
+            const controlsToggleBtn = document.getElementById('controlsToggleBtn');
+            const observationsWrapper = document.getElementById('observationsWrapper');
+            const controlsWrapper = document.getElementById('controlsWrapper');
+
+            observationsToggleBtn.addEventListener('click', function() {
+                observationsToggleBtn.classList.add('active');
+                controlsToggleBtn.classList.remove('active');
+                observationsWrapper.style.display = 'block';
+                controlsWrapper.style.display = 'none';
+            });
+
+            controlsToggleBtn.addEventListener('click', function() {
+                controlsToggleBtn.classList.add('active');
+                observationsToggleBtn.classList.remove('active');
+                controlsWrapper.style.display = 'block';
+                observationsWrapper.style.display = 'none';
+            });
+
+            // Equipment items click animation
+            document.querySelectorAll('.equipment-item, .chemical-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.add('selected');
+                    setTimeout(() => this.classList.remove('selected'), 300);
+                    // You can add drag-to-workspace functionality here
+                    console.log('Selected:', this.dataset.item || this.dataset.chemical);
+                });
+            });
+
+            // Simple chat functionality
+            const chatInput = document.getElementById('chatInput');
+            const chatSendBtn = document.getElementById('chatSendBtn');
+            const chatMessages = document.getElementById('chatMessages');
+
+            function addMessage(text, isUser = false) {
+                const msg = document.createElement('div');
+                msg.className = 'chat-message ' + (isUser ? 'user' : 'assistant');
+                msg.innerHTML = `
+                    <div class="message-avatar">${isUser ? '👤' : '🧑‍🔬'}</div>
+                    <div class="message-content"><p>${text}</p></div>
+                `;
+                chatMessages.appendChild(msg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function handleChat() {
+                const text = chatInput.value.trim();
+                if (!text) return;
+                
+                addMessage(text, true);
+                chatInput.value = '';
+
+                // Simple bot responses
+                setTimeout(() => {
+                    let response = "I'm here to help with your experiment! Could you be more specific?";
+                    const lowerText = text.toLowerCase();
+                    
+                    if (lowerText.includes('edta') || lowerText.includes('titration')) {
+                        response = "EDTA titration is used to determine water hardness. Add the indicator to see the wine-red color, then titrate until it turns blue!";
+                    } else if (lowerText.includes('indicator') || lowerText.includes('ebt')) {
+                        response = "Eriochrome Black T (EBT) is the indicator. It's wine-red with Ca²⁺/Mg²⁺ ions and turns blue at the endpoint.";
+                    } else if (lowerText.includes('buffer')) {
+                        response = "Use a pH 10 buffer (NH₄Cl/NH₃) to maintain optimal conditions for EDTA complexation.";
+                    } else if (lowerText.includes('endpoint')) {
+                        response = "The endpoint is reached when the solution changes from wine-red → purple → stable blue color.";
+                    } else if (lowerText.includes('hello') || lowerText.includes('hi')) {
+                        response = "Hello! Ready to perform the EDTA titration experiment? Click 'Experiment' tab to start!";
+                    }
+                    
+                    addMessage(response);
+                }, 500);
+            }
+
+            chatSendBtn.addEventListener('click', handleChat);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleChat();
+            });
+
+            // Sync right panel inputs with left panel
+            const syncInputs = [
+                ['studentNameRight', 'studentName'],
+                ['rollNoRight', 'rollNo'],
+                ['edtaConcRight', 'edtaConc'],
+                ['bufferPHRight', 'bufferPH']
+            ];
+
+            syncInputs.forEach(([rightId, leftId]) => {
+                const rightEl = document.getElementById(rightId);
+                const leftEl = document.getElementById(leftId);
+                if (rightEl && leftEl) {
+                    rightEl.addEventListener('input', () => leftEl.value = rightEl.value);
+                    rightEl.addEventListener('change', () => leftEl.value = rightEl.value);
+                }
+            });
+
+            // Sync start button
+            const startBtnRight = document.getElementById('startBtnRight');
+            if (startBtnRight) {
+                startBtnRight.addEventListener('click', () => {
+                    document.getElementById('startBtn').click();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

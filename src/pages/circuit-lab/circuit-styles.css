@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 22 95% 50%; /* Orange from landing */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 200 70% 80%; /* Blue from landing */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 22 95% 50%;
+
+    --radius: 0.75rem;
+
+    /* Circuit specific - Black/Grey Tones */
+    --circuit-bg: #050505;
+    --circuit-grid: rgba(255, 255, 255, 0.03);
+    --circuit-line: #4a4a4a;
+    --circuit-node: #e2e8f0;
+    --circuit-highlight: #f97316; /* Orange highlight */
+    --circuit-current: #38bdf8; /* Blue current */
+    --circuit-voltage: #facc15;
+    --circuit-resistor: #64748b;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+/* Ultra-realistic Lab Background */
+.lab-container {
+  background: #000;
+  min-height: 100vh;
+}
+
+/* Circuit Board Grid Pattern */
+.circuit-board {
+  background-color: var(--circuit-bg);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 30px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+}
+
+/* Merged Sidebar Layout Styles */
+.sidebar-merged {
+  background: var(--app-landing-gradient);
+  backdrop-filter: blur(20px);
+  border: none;
+}
+
+/* Glassmorphism Panels */
+.glass-panel {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Glowing Effect for Active Elements */
+.glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4), 0 0 40px rgba(139, 92, 246, 0.2);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(6, 182, 212, 0.2);
+}
+
+/* Animated Current Flow */
+@keyframes currentFlow {
+  0% {
+    stroke-dashoffset: 20;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.current-animation {
+  stroke-dasharray: 10 10;
+  animation: currentFlow 0.5s linear infinite;
+}
+
+/* Component Value Display */
+.value-badge {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+/* Premium Input Styling */
+.premium-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  transition: all 0.3s ease;
+}
+
+.premium-input:focus {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Slider Track */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+  cursor: pointer;
+  margin-top: -6px;
+}
+
+/* Firefox slider track */
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+/* Firefox slider thumb */
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+  cursor: pointer;
+  border: none;
+}
+
+/* Meter Display */
+.meter-display {
+  font-family: 'JetBrains Mono', monospace;
+  background: linear-gradient(180deg, #0a0f1a 0%, #1e293b 100%);
+  border: 2px solid #334155;
+  border-radius: 8px;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* LED Indicator */
+.led-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.led-green {
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e, 0 0 20px rgba(34, 197, 94, 0.5);
+}
+
+.led-red {
+  background: #ef4444;
+  box-shadow: 0 0 10px #ef4444, 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+/* App level styles if needed, mostly doing everything in components or index.css for now */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: radial-gradient(circle at top right, #1e1b4b, var(--bg-dark));
+}

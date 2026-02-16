@@ -1,0 +1,13 @@
+project_id = "iamttgfcjvwbmdrhhaxr"
+ 
+[functions.ai-chat]
+verify_jwt = false
+
+[functions.web-search]
+verify_jwt = false
+
+[functions.e2b-sandbox]
+verify_jwt = false
+
+[functions.codex-ai]
+verify_jwt = false
